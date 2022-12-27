@@ -3,7 +3,7 @@ import datetime
 
 
 from telegram import ReplyKeyboardMarkup
-from db_analyst.models import User_verification
+from db_analyst.models import User_verification, Purpose
 import logging
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -52,11 +52,17 @@ def cancel(update, context):
     )
 
 
-def ready_to_chat(update, context):
-
+def ready_to_chat(update, context, button=None):
     chat = update.effective_chat
     name = update.message.chat.first_name
+    Purpose.objects.create(apartment=True, machine=True,  vacation=True, another_target=True)
+    button = ReplyKeyboardMarkup([['/Купить машину'], ['/Купить квартиру'], ['/Отправится в отпуск'], ['/Другая цель']], resize_keyboard=True)
     context.bot.send_message(
         chat_id=chat.id,
-        text='Начнем! {}.Давай выбирим цели:'.format(name)
+        text='Начнем! {}.Какя у вас цель цель?:'
+             "/Купить машину\n"
+             "/Купить квартиру\n"
+             "/Отправится в отпуск\n"
+             "/Другая цель\n".format(name),
+        reply_markup=button
     )
